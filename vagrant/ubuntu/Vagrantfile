@@ -1,0 +1,24 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "williamyeh/ubuntu-trusty64-docker"
+
+  # Ports
+  config.vm.network :forwarded_port, guest: 5601, host: 5601, id: "kibana"
+  config.vm.network :forwarded_port, guest: 8888, host: 8888, id: "Spring Cloud Server"
+  config.vm.network :forwarded_port, guest: 9000, host: 9000, id: "portainer docker management UI"
+  config.vm.network :forwarded_port, guest: 9100, host: 9100, id: "kafdrop Kafka browser"
+  config.vm.network :forwarded_port, guest: 9200, host: 9200, id: "Elasticsearch"
+
+  ## mount common folder to the vm
+  config.vm.synced_folder "../../", "/home/vagrant/capstone"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+
+    # Customize the amount of memory and CPUs on the VM:
+    vb.memory = "8192"
+    vb.cpus = "3"
+    vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional']
+  end
+
+  config.vm.provision "shell", path: "../bootstrap.sh"
+end

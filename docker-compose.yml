@@ -2,14 +2,14 @@
 version: '2.0'
 services:
   zookeeper:
-    image: "confluentinc/cp-zookeeper:4.1.0"
+    image: "confluentinc/cp-zookeeper:5.0.0"
     network_mode: host
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    image: "confluentinc/cp-enterprise-kafka:4.1.0"
+    image: "confluentinc/cp-enterprise-kafka:5.0.0"
     network_mode: host
     depends_on:
       - zookeeper
@@ -29,7 +29,7 @@ services:
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
 
   schema-registry:
-    image: "confluentinc/cp-schema-registry:4.1.0"
+    image: "confluentinc/cp-schema-registry:5.0.0"
     network_mode: host
     depends_on:
       - zookeeper
@@ -42,7 +42,7 @@ services:
 
   # Runs the Kafka KSQL data generator for topic called "pageviews"
   ksql-datagen-pageviews:
-    image: "confluentinc/ksql-examples:4.1.0"
+    image: "confluentinc/ksql-examples:5.0.0"
     network_mode: host
     depends_on:
       - kafka
@@ -70,7 +70,7 @@ services:
 
   # Runs the Kafka KSQL data generator for topic called "users"
   ksql-datagen-users:
-    image: "confluentinc/ksql-examples:4.1.0"
+    image: "confluentinc/ksql-examples:5.0.0"
     network_mode: host
     depends_on:
       - kafka
@@ -100,7 +100,9 @@ services:
 
   # Runs the Kafka KSQL Server
   ksql-server:
-    image: "confluentinc/ksql-cli:4.1.0"
+    image: "confluentinc/ksql-cli:5.0.0"
+    volumes: 
+      - /home/vagrant/capstone/ksql-functions/target:/ksql/functions
     network_mode: host
     depends_on:
       - kafka
@@ -114,16 +116,16 @@ services:
                        echo Waiting for Confluent Schema Registry to be ready... && \
                        cub sr-ready localhost 8081 20 && \
                        echo Waiting a few seconds for topic creation to finish... && \
-                       sleep 2 && \
+                       sleep 2 && \                       
                        /usr/bin/ksql-server-start /etc/ksql/ksql-server.properties'"
     environment:
       KSQL_CONFIG_DIR: "/etc/ksql"
-      KSQL_OPTS: "-Dbootstrap.servers=localhost:29092 -Dksql.schema.registry.url=http://localhost:8081 -Dlisteners=http://0.0.0.0:8088"
+      KSQL_OPTS: "-Dbootstrap.servers=localhost:29092 -Dksql.schema.registry.url=http://localhost:8081 -Dlisteners=http://0.0.0.0:8088 -Dksql.extension.dir=/ksql/functions"
       KSQL_LOG4J_OPTS: "-Dlog4j.configuration=file:/etc/ksql/log4j-rolling.properties"
 
   # Runs the KSQL CLI
   ksql-cli:
-    image: "confluentinc/ksql-cli:4.1.0"
+    image: "confluentinc/ksql-cli:5.0.0"
     network_mode: host
     depends_on:
       - kafka

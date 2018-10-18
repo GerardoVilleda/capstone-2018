@@ -10,6 +10,7 @@ Some files related with the project
 * KSQL git repository - https://github.com/confluentinc/ksql
 * Spring Boot - https://projects.spring.io/spring-boot/
 * Spring Boot and Docker - https://spring.io/guides/gs/spring-boot-docker/
+* KSQL Source code - https://github.com/confluentinc/ksql.git
 
 ## Vagrant & Virtual Box
 Before you get started make sure you have installed Virtual Box and Vagrant (see refernces). 
@@ -163,6 +164,13 @@ Build using the following maven command (will also build a docker image)
 
     cd /home/vagrant/capstone/kafka-producer
     mvn clean package dockerfile:build
+
+## H2 Database Console
+Use the following link to connect to the H2 database
+
+    http://localhost:8082/h2
+
+> NOTE: JDBC URL = jdbc:h2:~/capstone
 
 ## Useful commands
 Here are some useful commands (you be the judge)

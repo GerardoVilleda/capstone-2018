@@ -7,6 +7,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 9000, host: 9000, id: "portainer docker management UI"
   config.vm.network :forwarded_port, guest: 9100, host: 9100, id: "kafdrop Kafka browser"
   config.vm.network :forwarded_port, guest: 9200, host: 9200, id: "Elasticsearch"
+  config.vm.network :forwarded_port, guest: 8081, host: 8081, id: "Sample Kafka Producer"
 
   ## mount common folder to the vm
   config.vm.synced_folder "../../", "/home/vagrant/capstone"

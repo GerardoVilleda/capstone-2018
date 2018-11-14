@@ -206,3 +206,34 @@ Here are some useful commands (you be the judge)
     # Run the producer code
     java -jar target/capstone-kafka-producer-0.1.0.jar 
 
+# MySQL Setup
+There are several changes needed to support MySQL. 
+
+## Docker MySQL
+Run the following command to start a docker instance for MySQL. The docker will create a database called `capstone` and a user with the same name and password.
+
+    docker run --name mysql -e MYSQL_ROOT_PASSWORD=capstone -e MYSQL_DATABASE=capstone -e MYSQL_USER=capstone -e MYSQL_PASSWORD=capstone -d mysql
+
+## Command Line Logon
+Run the following docker command to logon to MySQL console
+
+    docker run -it --link mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+
+# Connecting to MySQL
+Before connecting to MySQL we need to know the IP address for the running docker instance. Run the following command to retrieve this value.
+
+    docker inspect mysql | grep '"IPAddress"' | head -n 1
+
+Copy the above value (e.g. 172.17.0.3). You will use it below.
+
+## Build and run Producer
+Build the producer code
+
+    cd ~/capstone/kafka-producer
+    mvn clean package
+
+## Run Producer
+The IP address shown below must be replaced with the proper value retirned from the `docker inspect` command shown above. 
+
+    MYSQL_HOST=172.17.0.3 SPRING_PROFILES_ACTIVE=mysql java -jar target/capstone-kafka-producer-0.1.0.jar
+
